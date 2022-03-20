@@ -33,6 +33,8 @@ const App = () => {
     );
 }
 
+
+
 const CuteComponent = () => {
     // 'useHistory' is replaced by 'useNavigate' which upon calling, returns a function and this function works like 'history.push()' method. See docs for more info
     const navigate = useNavigate();
@@ -48,3 +50,67 @@ const CuteComponent = () => {
         </div>
     );
 };
+
+////////////////////
+// Private Routes //
+////////////////////
+
+// this function checks if the user is logged in
+function useAuth() {
+    const auth = false;
+    return auth;
+}
+
+// This component takes the restricted component as it child. It checks if the user is logged in using 'useAuth' hook
+// then it conditionally renders the the restricted component or the redirected component depending on the user's logged in status
+
+const PrivateRoute = ({ children }) => {
+    const auth = useAuth();
+    return auth ? children : <Navigate to='/login' />;
+};
+
+// Then the PrivateRoute is used as the value of 'element' prop and the takes the restricted component as its child
+
+function App2() {
+  return (
+    <>
+      <Routes>
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          } />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </>
+  );
+}
+
+////////////////////////////////////////////////////////////
+// Private Routes when you have multiple restricted routes//
+////////////////////////////////////////////////////////////
+
+// This time, instead of writing 'PrivateRoute', we write a component named 'PrivateOutlet' which is as follows: 
+function PrivateOutlet() {
+  const auth = useAuth();
+    // import 'Outlet' from react-router-dom
+    return auth ? <Outlet /> : <Navigate to='/login' />;
+}
+
+// Now use PrivateOutlet as follows 
+
+function App3() {
+  return (
+    <>
+      <Routes>
+        <Route path='/*' element={<PrivateOutlet />}>
+          <Route path="dashboard" element={<h2>This is our dashboard</h2>} />
+          <Route path="secret-page" element={<h2>This is our secret page</h2>} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </>
+  )
+}
