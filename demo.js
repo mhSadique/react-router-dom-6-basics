@@ -55,7 +55,7 @@ const CuteComponent = () => {
 // Private Routes //
 ////////////////////
 
-// this function checks if the user is logged in
+// this hook checks if the user is logged in
 function useAuth() {
     const auth = false;
     return auth;
